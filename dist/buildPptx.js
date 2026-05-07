@@ -33,7 +33,6 @@ async function buildPptx(input, output) {
         fontSize: 20,
         bold: true
     });
-    // Calculate appropriate dimensions for the diagram
     const { width, height } = calculateImageDimensions(absoluteImagePath);
     // Diagram (canonical, image) - Using calculated dimensions to maintain aspect ratio
     slide.addImage({

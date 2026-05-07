@@ -2,24 +2,6 @@ import PptxGenJS from "pptxgenjs";
 import { renderMermaid } from "./renderMermaid.js";
 import path from "path";
 import fs from "fs";
-<<<<<<< HEAD
-
-function calculateImageDimensions(imagePath: string, maxWidth: number = 9.0, maxHeight: number = 4.0) {
-  // Use a simple approach: assume most mermaid diagrams are wide
-  // We can parse PNG dimensions if needed, but default to sensible values
-  const aspectRatio = 3.5; // Most mermaid flowcharts are wider than tall
-
-  // Calculate dimensions that fit within maxWidth/maxHeight while maintaining aspect ratio
-  let newWidth = maxWidth;
-  let newHeight = newWidth / aspectRatio;
-
-  if (newHeight > maxHeight) {
-    newHeight = maxHeight;
-    newWidth = newHeight * aspectRatio;
-  }
-
-  return { width: newWidth, height: newHeight };
-=======
 import { createReadStream } from "fs";
 
 // Function to read PNG dimensions from file header
@@ -64,7 +46,6 @@ function calculateImageDimensions(imagePath: string, maxWidth: number = 9.0, max
 
     return { width: newWidth, height: newHeight };
   }
->>>>>>> f409932 (adding unpushed changes)
 }
 
 async function buildPptx(input: string, output: string) {
@@ -90,17 +71,10 @@ async function buildPptx(input: string, output: string) {
     bold: true
   });
 
-<<<<<<< HEAD
-  // Calculate appropriate dimensions for the diagram
-  const { width, height } = calculateImageDimensions(absoluteImagePath);
-
-  // Diagram (canonical, image) - Using calculated dimensions to maintain aspect ratio
-=======
   // Calculate appropriate dimensions for the diagram based on actual PNG dimensions
   const { width, height } = calculateImageDimensions(absoluteImagePath);
 
   // Diagram (canonical, image) - Using actual image aspect ratio to prevent squeezing
->>>>>>> f409932 (adding unpushed changes)
   slide.addImage({
     path: absoluteImagePath,
     x: 0.5,
