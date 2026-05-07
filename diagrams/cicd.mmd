@@ -1,0 +1,11 @@
+flowchart LR
+  Dev[Developer] -->|Commit| SCM[Git Repo]
+  SCM --> CI[CI Pipeline]
+  CI --> Scan[Security Scan]
+  Scan --> Build[Build Image]
+  Build --> Registry[Artifact Registry]
+  Registry --> CD[CD Pipeline]
+  CD --> Prod[Production]
+
+  classDef canonical fill:#ffffff,stroke:#333,stroke-width:1px;
+  class Dev,SCM,CI,Scan,Build,Registry,CD,Prod canonical;
