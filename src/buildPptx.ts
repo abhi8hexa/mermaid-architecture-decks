@@ -2,6 +2,7 @@ import PptxGenJS from "pptxgenjs";
 import { renderMermaid } from "./renderMermaid.js";
 import path from "path";
 import fs from "fs";
+<<<<<<< HEAD
 
 function calculateImageDimensions(imagePath: string, maxWidth: number = 9.0, maxHeight: number = 4.0) {
   // Use a simple approach: assume most mermaid diagrams are wide
@@ -18,6 +19,52 @@ function calculateImageDimensions(imagePath: string, maxWidth: number = 9.0, max
   }
 
   return { width: newWidth, height: newHeight };
+=======
+import { createReadStream } from "fs";
+
+// Function to read PNG dimensions from file header
+function getPNGDimensions(filePath: string): { width: number; height: number } {
+  const buffer = fs.readFileSync(filePath);
+  
+  // PNG signature is 8 bytes, IHDR chunk starts at byte 8
+  // Width is at bytes 16-19, Height is at bytes 20-23 (big-endian)
+  const width = buffer.readUInt32BE(16);
+  const height = buffer.readUInt32BE(20);
+  
+  return { width, height };
+}
+
+function calculateImageDimensions(imagePath: string, maxWidth: number = 9.0, maxHeight: number = 4.0) {
+  try {
+    // Get actual image dimensions from PNG file
+    const { width: pngWidth, height: pngHeight } = getPNGDimensions(imagePath);
+    const actualAspectRatio = pngWidth / pngHeight;
+
+    // Calculate dimensions that fit within maxWidth/maxHeight while maintaining aspect ratio
+    let newWidth = maxWidth;
+    let newHeight = newWidth / actualAspectRatio;
+
+    if (newHeight > maxHeight) {
+      newHeight = maxHeight;
+      newWidth = newHeight * actualAspectRatio;
+    }
+
+    return { width: newWidth, height: newHeight };
+  } catch (error) {
+    // Fallback to default if we can't read PNG dimensions
+    console.warn("Could not read PNG dimensions, using default aspect ratio");
+    const aspectRatio = 3.5;
+    let newWidth = maxWidth;
+    let newHeight = newWidth / aspectRatio;
+
+    if (newHeight > maxHeight) {
+      newHeight = maxHeight;
+      newWidth = newHeight * aspectRatio;
+    }
+
+    return { width: newWidth, height: newHeight };
+  }
+>>>>>>> f409932 (adding unpushed changes)
 }
 
 async function buildPptx(input: string, output: string) {
@@ -43,10 +90,17 @@ async function buildPptx(input: string, output: string) {
     bold: true
   });
 
+<<<<<<< HEAD
   // Calculate appropriate dimensions for the diagram
   const { width, height } = calculateImageDimensions(absoluteImagePath);
 
   // Diagram (canonical, image) - Using calculated dimensions to maintain aspect ratio
+=======
+  // Calculate appropriate dimensions for the diagram based on actual PNG dimensions
+  const { width, height } = calculateImageDimensions(absoluteImagePath);
+
+  // Diagram (canonical, image) - Using actual image aspect ratio to prevent squeezing
+>>>>>>> f409932 (adding unpushed changes)
   slide.addImage({
     path: absoluteImagePath,
     x: 0.5,
