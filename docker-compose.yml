@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  mermaid-deck:
+    build: .
+    container_name: mermaid-deck-builder
+    volumes:
+      - ./diagrams:/app/diagrams
+      - ./output:/app/output
+    environment:
+      - NODE_ENV=production

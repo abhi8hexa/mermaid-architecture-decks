@@ -1,0 +1,33 @@
+flowchart TB
+    Dev[Developer Request]
+
+    subgraph Control["Azure Control Plane"]
+        DF[Durable Function<br/>Orchestrator]
+    end
+
+    subgraph Agents["AI Intelligence Layer"]
+        A[Architect Agent]
+        C[Coder Agent]
+        T[Tester Agent]
+        AU[Auditor Agent]
+    end
+
+    subgraph CI["CI / Automation"]
+        TF[Terraform CLI]
+        Lint[TFLint]
+    end
+
+    subgraph Git["GitHub"]
+        PR[Pull Request]
+        Approvals[Manual / Automated Approval]
+    end
+
+    Dev --> DF
+    DF --> A
+    DF --> C
+    DF --> T
+    DF --> AU
+    T --> CI
+    CI --> DF
+    DF --> PR
+    PR --> Approvals
