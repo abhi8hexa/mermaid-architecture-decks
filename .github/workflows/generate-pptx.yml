@@ -1,15 +1,33 @@
-- name: Build Docker image
-  run: docker build -t mermaid-pptx .
+name: Generate PPTX
 
-- name: Generate PPTX using Docker
-  run: |
-    mkdir -p output
-    docker run --rm \
-      -v ${{ github.workspace }}/output:/app/output \
-      mermaid-pptx
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
-- name: Upload PPTX artifacts
-  uses: actions/upload-artifact@v4
-  with:
-    name: architecture-decks
-    path: output/*.pptx
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t mermaid-pptx .
+
+      - name: Generate PPTX using Docker
+        run: |
+          mkdir -p output
+          docker run --rm \
+            -v ${{ github.workspace }}/output:/app/output \
+            mermaid-pptx
+
+      - name: Upload PPTX artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: architecture-decks
+          path: output/*.pptx
