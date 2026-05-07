@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Mermaid Architecture Decks
 
 This repo generates PowerPoint architecture decks from Mermaid diagrams.
@@ -29,10 +28,9 @@ This repo generates PowerPoint architecture decks from Mermaid diagrams.
 🚫 Do not ungroup or modify diagram images  
 
 ## Local Run (Optional)
-```bash
-npm install
-npm run build:pptx diagrams/cicd.mmd output/cicd.pptx
+docker build -t mermaid-architecture-decks .
+docker run --rm -v $(pwd)/output:/app/output mermaid-architecture-decks
 =======
 # mermaid-architecture-decks
 generating ppt using mermaid diagrams
->>>>>>> f409932 (adding unpushed changes)
+
