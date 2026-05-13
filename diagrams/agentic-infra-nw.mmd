@@ -1,0 +1,140 @@
+
+flowchart TB
+
+%% =========================
+%% ON-PREMISE / USERS
+%% =========================
+USER["Enterprise Users / DevOps"]
+GITHUB["GitHub SaaS"]
+TEAMS["Microsoft Teams"]
+
+USER --> GITHUB
+USER --> TEAMS
+
+%% =========================
+%% EDGE / ENTRY
+%% =========================
+subgraph EDGE ["Edge Layer"]
+    APIM["API Management / App Gateway"]
+    WAF["Web Application Firewall"]
+end
+
+GITHUB --> APIM
+TEAMS --> APIM
+APIM --> WAF
+
+%% =========================
+%% AZURE VNET
+%% =========================
+subgraph VNET ["Azure Virtual Network"]
+
+    %% Subnets
+    subgraph SUBNET1 ["App Subnet"]
+        FUNC["Azure Durable Functions"]
+        APP["API App Service"]
+    end
+
+    subgraph SUBNET2 ["Agent Subnet"]
+        AI["Azure AI Foundry / Agent Service"]
+    end
+
+    subgraph SUBNET3 ["Execution Subnet"]
+        RUNNER["Terraform Runner (Container / VM)"]
+    end
+
+    subgraph SUBNET4 ["Data Subnet"]
+        STORAGE["Storage Account"]
+        STATE["Terraform State"]
+    end
+
+    subgraph SUBNET5 ["Security Subnet"]
+        KV["Azure Key Vault"]
+    end
+
+end
+
+WAF --> FUNC
+WAF --> APP
+
+FUNC --> AI
+FUNC --> RUNNER
+
+%% =========================
+%% PRIVATE ENDPOINTS
+%% =========================
+subgraph PRIVATE_ENDPOINTS ["Private Endpoints"]
+
+    PE_STORAGE["PE - Storage"]
+    PE_KV["PE - Key Vault"]
+    PE_AI["PE - AI Foundry"]
+
+end
+
+RUNNER --> PE_STORAGE
+RUNNER --> PE_KV
+FUNC --> PE_AI
+
+PE_STORAGE --> STORAGE
+PE_KV --> KV
+PE_AI --> AI
+
+%% =========================
+%% FIREWALL
+%% =========================
+subgraph FIREWALL_LAYER ["Azure Firewall"]
+
+    FW["Azure Firewall"]
+
+end
+
+RUNNER --> FW
+FUNC --> FW
+AI --> FW
+
+%% Outbound Control
+FW --> INTERNET["Restricted Internet Access"]
+
+%% =========================
+%% INFRA DEPLOYMENT
+%% =========================
+subgraph INFRA ["Target Azure Resources"]
+
+    VNET_RES["Spoke VNets"]
+    AKS["AKS Cluster"]
+    DB["Database"]
+    APP_RES["App Services"]
+
+end
+
+RUNNER --> VNET_RES
+RUNNER --> AKS
+RUNNER --> DB
+RUNNER --> APP_RES
+
+%% =========================
+%% IDENTITY
+%% =========================
+subgraph IDENTITY ["Identity & Access"]
+
+    MI["Managed Identity"]
+    AAD["Azure AD"]
+
+end
+
+FUNC --> MI
+RUNNER --> MI
+MI --> AAD
+
+%% =========================
+%% MONITORING
+%% =========================
+subgraph MONITORING ["Observability"]
+
+    LOG["Log Analytics"]
+    APPINS["Application Insights"]
+
+end
+
+FUNC --> APPINS
+RUNNER --> LOG
+AI --> APPINS
